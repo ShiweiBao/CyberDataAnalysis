@@ -4,6 +4,7 @@ from sklearn.datasets import make_classification
 from sklearn.cross_validation import train_test_split
 from transf import transf
 import pandas as pd
+
 # Generate tain and test data
 
 #X, Y = make_classification(n_samples=50000, n_features=10, n_informative=8, 
@@ -14,7 +15,7 @@ import pandas as pd
 src='./data_for_student_case.csv'
 df=pd.read_csv(src)
 dfcs=transf(df)
-dfx=dfcs.loc[:,['amount','bookingdate','cardverificationcodesupplied','cvcresponsecode']]
+dfx=dfcs.loc[:,['amountEUR','bookingdate','cardverificationcodesupplied','cvcresponsecode']]
 dfy=dfcs.loc[:,'simple_journal']
 X=dfx.values
 Y=dfy.values
@@ -108,3 +109,33 @@ with tf.Session() as sess:
     print "Accuracy:", accuracy.eval({x: X_test, y: Y_test})
     global result 
     result = tf.argmax(pred, 1).eval({x: X_test, y: Y_test})
+
+
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+#for i in range(n_classes):
+#    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+#    roc_auc[i] = auc(fpr[i], tpr[i])
+
+# Compute micro-average ROC curve and ROC area
+fpr["micro"], tpr["micro"], _ = roc_curve(Y_test.ravel(), result.ravel())
+roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+plt.figure()
+lw = 2
+plt.figure()
+plt.plot(fpr["micro"], tpr["micro"],
+         label='micro-average ROC curve (area = {0:0.2f})'
+               ''.format(roc_auc["micro"]),
+         color='deeppink', linestyle=':', linewidth=4)
+#plt.plot(fpr[2], tpr[2], color='darkorange',
+#         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[2])
+plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic example')
+plt.legend(loc="lower right")
+plt.show()
