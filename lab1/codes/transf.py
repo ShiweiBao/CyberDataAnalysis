@@ -7,11 +7,10 @@ Created on Sat May 13 18:50:30 2017
 """
 import pandas as pd 
 import numpy as np
+import scipy.io as sio
 
 
-src='/Users/chengchaoyang/GoogleCloud/Class/1cyber/assignment1/data_for_student_case.csv'
-df=pd.read_csv(src)
-dfcs=transf(df)
+
 
 def perday(df,DateName):
 
@@ -54,11 +53,20 @@ def transf(df):
     dfcs['bookingdate'] = dfcs['bookingdate']-firstday
     dfcs['bookingdate']=dfcs['bookingdate'] / np.timedelta64(1, 'D')
 
-    dfcs.loc[dfcs['cardverificationcodesupplied']==False,'cardverificationcodesupplied']=0
-    dfcs.loc[dfcs['cardverificationcodesupplied']==True,'cardverificationcodesupplied']=1
+    dfcs.loc[dfcs['cardverificationcodesupplied']==False,'cardverificationcodesupplied']=0.0
+    dfcs.loc[dfcs['cardverificationcodesupplied']==True,'cardverificationcodesupplied']=1.0
     dfcs=dfcs[(dfcs['cardverificationcodesupplied']==0) | (dfcs['cardverificationcodesupplied']==1)]
+    dfcs.loc[:,'cardverificationcodesupplied']=pd.to_numeric(dfcs.loc[:,'cardverificationcodesupplied'])
+    
+    dfcs.loc[dfcs['simple_journal']=='Chargeback','simple_journal']=0.0
+    dfcs.loc[dfcs['simple_journal']=='Settled','simple_journal']=1.0
+    dfcs.loc[:,'simple_journal']=pd.to_numeric(dfcs.loc[:,'simple_journal'])
 
-    dfcs.loc[dfcs['simple_journal']=='Chargeback','simple_journal']=0
-    dfcs.loc[dfcs['simple_journal']=='Settled','simple_journal']=1
+    dfcs.loc[:,'cvcresponsecode']=pd.to_numeric(dfcs.loc[:,'cvcresponsecode'])
+    
+    
+
 
     return dfcs
+
+
