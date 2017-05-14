@@ -42,8 +42,8 @@ def transf(df):
         if df['currencycode'][i] == "SEK":
             amountEUR.append(currencyconvert["SEK"]*df['amount'][i])
 #amountEUR
-
-    df=df.loc[:,['amount','bookingdate','simple_journal','cardverificationcodesupplied','cvcresponsecode']]
+    df['amountEUR']=amountEUR
+    df=df.loc[:,['amountEUR','bookingdate','simple_journal','cardverificationcodesupplied','cvcresponsecode']]
     dfcs=df[(df['simple_journal']=='Chargeback') | (df['simple_journal']=='Settled')]
 
 
@@ -58,8 +58,8 @@ def transf(df):
     dfcs=dfcs[(dfcs['cardverificationcodesupplied']==0) | (dfcs['cardverificationcodesupplied']==1)]
     dfcs.loc[:,'cardverificationcodesupplied']=pd.to_numeric(dfcs.loc[:,'cardverificationcodesupplied'])
     
-    dfcs.loc[dfcs['simple_journal']=='Chargeback','simple_journal']=0.0
-    dfcs.loc[dfcs['simple_journal']=='Settled','simple_journal']=1.0
+    dfcs.loc[dfcs['simple_journal']=='Chargeback','simple_journal']=1.0
+    dfcs.loc[dfcs['simple_journal']=='Settled','simple_journal']=0.0
     dfcs.loc[:,'simple_journal']=pd.to_numeric(dfcs.loc[:,'simple_journal'])
 
     dfcs.loc[:,'cvcresponsecode']=pd.to_numeric(dfcs.loc[:,'cvcresponsecode'])
@@ -68,5 +68,4 @@ def transf(df):
 
 
     return dfcs
-
 

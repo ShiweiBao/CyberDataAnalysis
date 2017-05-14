@@ -4,7 +4,19 @@ from sklearn.datasets import make_classification
 from sklearn.cross_validation import train_test_split
 from transf import transf
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from itertools import cycle
 
+from sklearn import svm, datasets
+from sklearn.metrics import roc_curve, auc
+from sklearn.cross_validation import train_test_split
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
+from transf import transf
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import neighbors
 # Generate tain and test data
 
 #X, Y = make_classification(n_samples=50000, n_features=10, n_informative=8, 
@@ -110,7 +122,7 @@ with tf.Session() as sess:
     global result 
     result = tf.argmax(pred, 1).eval({x: X_test, y: Y_test})
 
-
+##########plot roc curve
 fpr = dict()
 tpr = dict()
 roc_auc = dict()
