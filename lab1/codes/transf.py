@@ -39,6 +39,14 @@ from sklearn.metrics import roc_curve
 
 
 def classify(dffeatures,labels,clfname):
+    if clfname=='1nn':
+        clf = neighbors.KNeighborsClassifier(n_neighbors=1)
+    elif clfname=='neural':
+        clf=MLPClassifier(hidden_layer_sizes=(300, ))
+    elif clfname=='LR':
+        clf = linear_model.LinearRegression()
+    else:
+        print('input LR, 1nn or neural !')
     TP, FP, FN, TN = 0, 0, 0, 0
     x_array = np.array(dffeatures)
     y_array = np.array(labels)
@@ -52,8 +60,7 @@ def classify(dffeatures,labels,clfname):
     x_test=usx[length:,[0,1,2,4,5]]
     y_test=usy[length:]
     #--- classifier 1:  KNN
-    clf = neighbors.KNeighborsClassifier(n_neighbors=1)
-    
+
     #---classifier 2: Linear Regression
     # Create linear regression object
     # clf= linear_model.LinearRegression()
@@ -71,10 +78,10 @@ def classify(dffeatures,labels,clfname):
     x_train, y_train = dosm(x_train, y_train)
     
     
-    # clf.fit(x_train, y_train)
-    # y_predict = clf.predict(x_test)
+    clf.fit(x_train, y_train)
+    y_predict = clf.predict(x_test)
     #using 10 cross validation
-    y_predict = cross_val_predict(clf, x_train, y_train, cv=10)
+    # y_predict = cross_val_predict(clf, x_train, y_train, cv=10)
 
     for i in range(len(y_predict)):
         if y_test[i]==1 and y_predict[i]==1:
@@ -192,6 +199,14 @@ def transf(df):
     
     return dfcs
 def roccrossvalid(dffeatures,labels,clfname):
+    if clfname=='1nn':
+        classifier = neighbors.KNeighborsClassifier(n_neighbors=1)
+    elif clfname=='neural':
+        classifier=MLPClassifier(hidden_layer_sizes=(300, ))
+    elif clfname=='LR':
+        classifier = linear_model.LinearRegression()
+    else:
+        print('input LR, 1nn or neural !')
     # Run classifier with cross-validation and plot ROC curves
     X = dffeatures.values
     y = labels.values
@@ -200,7 +215,7 @@ def roccrossvalid(dffeatures,labels,clfname):
 
     cv = StratifiedKFold(n_splits=10)
     # classifier = neighbors.KNeighborsClassifier(n_neighbors=1)
-    classifier = MLPClassifier(hidden_layer_sizes=(300,))
+    # classifier = MLPClassifier(hidden_layer_sizes=(300,))
     # classifier = svm.SVC(kernel='linear', probability=True,
     #                      random_state=random_state)
 
